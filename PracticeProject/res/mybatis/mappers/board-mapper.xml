@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	<select id="GetBoardAllList" resultType="boardVo">
+		select b_no, b_title, b_content, b_writer, b_cnt, b_date from board
+	</select>
+	
+	<insert id="AddBoard" parameterType="boardVo">
+		insert into board (b_no,b_title,b_content,b_writer,b_cnt,b_date) values(b_no_sequence.nextval, #{b_title}, #{b_content}, '글쓴이',0,sysdate)
+	</insert>
+	
+	<select id="GetBoardDetail" parameterType="int"  resultType="boardVo">
+		select b_no, b_title, b_content, b_writer, b_cnt, b_date from board where b_no=#{b_no}
+	</select>
+	
+	<delete id="DeleteBoard" parameterType="int">
+		delete from board where b_no=#{b_no}
+	</delete>
+	
+	<update id="UpdateBoard" parameterType="boardVo">
+		update board set b_title=#{b_title},b_content=#{b_content} where b_no=#{b_no}
+	</update>
+	
+	<select id="GetCommentAllList" parameterType="int" resultType="boardCmtVo">
+		select bc_no, bc_content, bc_writer, bc_date from board_cmt where b_no=#{b_no} order by 1
+	</select>
+	
+	<insert id="AddComment" parameterType="boardCmtVo">
+		insert into board_cmt (bc_no, bc_content, bc_writer, bc_date, b_no) values(bc_no_sequence.nextval,#{bc_content},#{bc_writer},sysdate,#{b_no})
+	</insert>
+	
+	<select id="getOneComment" parameterType="int" resultType="boardCmtVo">
+		select bc_no, bc_content, bc_writer, bc_date, b_no from board_cmt where bc_no=#{bc_no}
+	</select>
+	
+	<update id="UpdateComment" parameterType="boardCmtVo">
+		update board_cmt set bc_content=#{bc_content}, bc_date=sysdate where bc_no=#{bc_no}
+	</update>
+	
+	<delete id="DeleteComment" parameterType="int">
+		delete from board_cmt where bc_no=#{bc_no}
+	</delete>
+	
+	<select id="pagingList" parameterType="map" resultType="boardVo">
+		 <![CDATA[select * from (select a.*, rownum as rnum from (select * from board order by board.b_no desc) a 
+						where rownum < #{end})
+		where rnum >= #{start} 
+		]]>
+	</select>
+	
+	<select id="getBoardCnt" resultType="int">
+		 select count(*) from board
+	</select>
+</mapper>
+	
