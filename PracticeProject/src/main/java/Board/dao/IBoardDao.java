@@ -9,7 +9,7 @@ import Board.vo.PagingVO;
 
 public interface IBoardDao {
 	/**
-	 * 게시판 전체 리스트 조회
+	 * 게시판 전체 리스트 조회ㄴ
 	 * @return List<BoardVO>
 	 */
 	public List<BoardVO> GetBoardAllList();
